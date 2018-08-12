@@ -55,7 +55,6 @@ def print_hand(player):
 	print(player)
 	for card in player.hand:
 		print(card)
-		print(card.get_player_id_of_card())
 
 def print_cards(_cards):
 	for card in _cards:
@@ -70,9 +69,7 @@ def distribute_hand(_player, _deck, _amount):
 		tmp.player_id = id(_player)
 		_player.hand.append(tmp)
 
-def play_round(_player_one, _player_two, _current_cards):
-	_current_cards.append(_player_one.hand.pop(0))
-	_current_cards.append(_player_two.hand.pop(0))
+def play_round(_current_cards):
 	find_highest_card(_current_cards)
 
 def find_the_highest_value_card(_cards):
@@ -107,20 +104,26 @@ def find_spades(_cards):
 			spade_cards.append(card)
 	return spade_cards
 
+def get_card_from_hand(_index, _cards):
+	return _cards.pop(_index)
+
+def game_loop():
+	populate_deck(deck)
+	shuffle_deck(deck)
+	for x in xrange(0, NUMBER_OF_PLAYERS):
+		players.append(Player("player_"+`x+1`, 0, []))
+		distribute_hand(players[x], deck, NUMBER_OF_ROUNDS)
+		print_hand(players[x])
+		player_choice_index = (int(raw_input("player one choose your card..... \n"))-1)
+		current_cards.append(get_card_from_hand(player_choice_index, players[x].hand))
+		print(current_cards[len(current_cards)-1])
+	play_round(current_cards)
+
+NUMBER_OF_PLAYERS = 2
+NUMBER_OF_ROUNDS = 2
+
 deck = []
 current_cards = []
 players = []
 
-populate_deck(deck)
-shuffle_deck(deck)
-
-player_1 = Player("player_1", 0, [])
-player_2 = Player("player_2", 0, [])
-
-players.append(player_1)
-players.append(player_2)
-
-distribute_hand(player_1, deck, 5)
-distribute_hand(player_2, deck, 5)
-
-play_round(player_1, player_2, current_cards)
+game_loop()
